@@ -75,7 +75,6 @@ If you have:
 
 ### Issues
 
-* The QUIC/DTLS/TLS switch is currently hardcoded to TLS
 * Have not yet been able to implement the signature algorithm fetching method ([src1](https://github.com/FoxIO-LLC/ja4/blob/main/python/common.py#L147), [src2](https://github.com/FoxIO-LLC/ja4/blob/main/python/ja4.py#L215))
 
 ### Testing

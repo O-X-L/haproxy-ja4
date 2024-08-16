@@ -78,14 +78,13 @@ function is_grease_value(value)
 end
 
 function tls_protocol(txn)
-    -- todo: lookup if quic/dtls/tls
-    -- if (starts_with(req.ver, '3'))
-    -- then
-    --    return 'q'
-    -- else
-    --     return 't'
-    -- end
-    return 't'
+    -- todo: lookup if quic/dtls
+    if (starts_with(txn.f:req_ver(), '3'))
+    then
+        return 'q'
+    else
+        return 't'
+    end
 end
 
 function tls_version(txn)
