@@ -11,6 +11,35 @@
 --   acl: var(txn.fingerprint_ja4) -m str t13d1517h2_8daaf6152771_b0da82dd1658
 
 local sha = require('sha2')
+-- see: https://github.com/FoxIO-LLC/ja4/blob/main/python/common.py#L24
+local GREASE_TABLE = {}
+GREASE_TABLE['0x0a0a'] = true
+GREASE_TABLE['0x1a1a'] = true
+GREASE_TABLE['0x2a2a'] = true
+GREASE_TABLE['0x3a3a'] = true
+GREASE_TABLE['0x4a4a'] = true
+GREASE_TABLE['0x5a5a'] = true
+GREASE_TABLE['0x6a6a'] = true
+GREASE_TABLE['0x7a7a'] = true
+GREASE_TABLE['0x8a8a'] = true
+GREASE_TABLE['0x9a9a'] = true
+GREASE_TABLE['0xaaaa'] = true
+GREASE_TABLE['0xbaba'] = true
+GREASE_TABLE['0xcaca'] = true
+GREASE_TABLE['0xdada'] = true
+GREASE_TABLE['0xeaea'] = true
+GREASE_TABLE['0xfafa'] = true
+
+local TLS_VERSIONS = {}
+TLS_VERSIONS[65276] = 'd3'
+TLS_VERSIONS[65277] = 'd2'
+TLS_VERSIONS[65279] = 'd1'
+TLS_VERSIONS[772] = '13'
+TLS_VERSIONS[771] = '12'
+TLS_VERSIONS[770] = '11'
+TLS_VERSIONS[769] = '10'
+TLS_VERSIONS[768] = 's3'
+TLS_VERSIONS[2] = 's2'
 
 function split_string(str, delimiter)
     local result = {}
@@ -37,7 +66,22 @@ end
 function table_length(tbl)
     local count = 0
     for _ in pairs(tbl) do count = count + 1 end
-    return tostring(count)
+    return count
+end
+
+function is_grease_value(value)
+    return GREASE_TABLE[value] ~= nil
+end
+
+function tls_version(txn)
+    local v = txn.f:ssl_fc_protocol_hello_id()
+    local n = TLS_VERSIONS[v]
+    if (n==nil)
+    then
+        return ''
+    else
+        return n
+    end
 end
 
 function sni_is_set()
@@ -49,12 +93,36 @@ function sni_is_set()
     end
 end
 
+function remove_grease(tbl)
+    for i,v in pairs(tbl) do
+        if is_grease_value(v) then
+            table.remove(tbl,i)
+        end
+    end
+end
+
 function cipher_count(txn)
-    return table_length(split_string(tostring(txn.c:be2dec(txn.f:ssl_fc_cipherlist_bin(1),"-",2)), "-"))
+    local e = split_string(tostring(txn.c:be2dec(txn.f:ssl_fc_cipherlist_bin(1),"-",2)), "-")
+    remove_grease(e)
+    local c = table_length(e)
+    if (c>99)
+    then
+        return '99'
+    else
+        return tostring(c)
+    end
 end
 
 function extension_count(txn)
-    return table_length(split_string(tostring(txn.c:be2dec(txn.f:ssl_fc_extlist_bin(1),"-",2)), "-"))
+    local e = split_string(tostring(txn.c:be2dec(txn.f:ssl_fc_extlist_bin(1),"-",2)), "-")
+    remove_grease(e)
+    local c = table_length(e)
+    if (c>99)
+    then
+        return '99'
+    else
+        return tostring(c)
+    end
 end
 
 function alpn(txn)
@@ -70,6 +138,7 @@ end
 function ciphers_sorted(txn)
     local c1 = string.lower(string.lower(tostring(txn.c:be2hex(txn.f:ssl_fc_cipherlist_bin(1),"-",2))))
     local c2 = split_string(c1, "-")
+    remove_grease(c2)
     table.sort(c2)
     return c2
 end
@@ -77,6 +146,7 @@ end
 function extensions_sorted(txn)
     local e1 = string.lower(tostring(txn.c:be2hex(txn.f:ssl_fc_extlist_bin(1),"-",2)))
     local e2 = split_string(e1, "-")
+    remove_grease(e2)
     -- see: https://github.com/FoxIO-LLC/ja4/blob/main/python/common.py#L109
     remove_from_table(e2, '0000')
     remove_from_table(e2, '0010')
@@ -96,7 +166,7 @@ function extensions_signature_merged(txn)
     local ext_sorted = extensions_sorted(txn)
     local ext_pretty = table.concat(ext_sorted, ",")
     local sig_sorted = signature_algo_sorted(txn)
-    if (table_length(sig_sorted)=='0')
+    if (table_length(sig_sorted)==0)
     then
         return ext_pretty
     else
@@ -110,7 +180,7 @@ end
 
 function fingerprint_ja4(txn)
     local p1 = 't'  -- todo: lookup if quic/tcp
-    local p2 = txn.f:ssl_fc_protocol():gsub('[^%d]', '')
+    local p2 = tls_version(txn)
     local p3 = sni_is_set()
     local p4 = cipher_count(txn)
     local p5 = extension_count(txn)
