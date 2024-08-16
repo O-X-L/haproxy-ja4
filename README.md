@@ -1,4 +1,4 @@
-# HAProxy - JA4 Client-Fingerprint - Lua Plugin
+# HAProxy - JA4 TLS Client-Fingerprint - Lua Plugin
 
 **WARNING: This plugin is still in early development! DO NOT USE IN PRODUCTION!**
 
@@ -6,6 +6,7 @@
 
 About JA4:
 
+* [JA4 Suite](https://github.com/FoxIO-LLC/ja4/blob/main/technical_details/README.md)
 * [FoxIO Repository](https://github.com/FoxIO-LLC/ja4)
 * [Cloudflare Blog](https://blog.cloudflare.com/ja4-signals)
 * [FoxIO Blog](https://blog.foxio.io/ja4%2B-network-fingerprinting)
