@@ -6,6 +6,7 @@
 
 About JA4:
 
+* [HAProxy Lua Plugin (JA4H)](https://github.com/O-X-L/haproxy-ja4h)
 * [JA4 Suite](https://github.com/FoxIO-LLC/ja4/blob/main/technical_details/README.md)
 * [FoxIO Repository](https://github.com/FoxIO-LLC/ja4)
 * [Cloudflare Blog](https://blog.cloudflare.com/ja4-signals)

@@ -8,7 +8,7 @@
 --   register: lua-load /etc/haproxy/lua/ja4.lua (in global)
 --   run: http-request lua.fingerprint_ja4
 --   log: http-request capture var(txn.fingerprint_ja4) len 36
---   acl: var(txn.fingerprint_ja4) -m str a195b9c006fcb23ab9a2343b0871e362
+--   acl: var(txn.fingerprint_ja4) -m str t13d1517h2_8daaf6152771_b0da82dd1658
 
 local sha = require('sha2')
 
