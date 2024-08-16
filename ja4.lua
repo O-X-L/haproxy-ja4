@@ -179,7 +179,7 @@ function truncated_sha256(value)
 end
 
 function fingerprint_ja4(txn)
-    local p1 = 't'  -- todo: lookup if quic/tcp
+    local p1 = 't'  -- todo: lookup if quic/dtls/tls
     local p2 = tls_version(txn)
     local p3 = sni_is_set()
     local p4 = cipher_count(txn)
