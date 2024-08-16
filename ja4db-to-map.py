@@ -1,3 +1,7 @@
+# Source: https://github.com/O-X-L/haproxy-ja4
+# Copyright (C) 2024 Rath Pascal
+# License: MIT
+
 from json import loads as json_loads
 
 DEBUG = False
