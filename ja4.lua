@@ -1,3 +1,7 @@
+-- Source: https://github.com/O-X-L/haproxy-ja4
+-- Copyright (C) 2024 Rath Pascal
+-- License: MIT
+
 -- JA4
 -- see: https://github.com/FoxIO-LLC/ja4
 -- config:
