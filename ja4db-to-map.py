@@ -28,11 +28,12 @@ with open('ja4+_db.json', 'r', encoding='utf-8') as db_file:
         if DEBUG:
             print(entry)
 
-        if entry['ja4_fingerprint'] is not None:
+        fp = entry['ja4_fingerprint']
+        if fp is not None:
             client = get_client(entry)
-            if client not in [None, ''] and entry['ja4_fingerprint'] not in processed:
-                processed.append(entry['ja4_fingerprint'])
-                db_kv.append(f"{entry['ja4_fingerprint']} {client.replace(' ', WHITESPACE_REPLACE)}")
+            if client not in [None, ''] and fp not in processed:
+                processed.append(fp)
+                db_kv.append(f"{fp} {client.replace(' ', WHITESPACE_REPLACE)}")
 
 with open('ja4.map', 'w', encoding='utf-8') as map_file:
     map_file.write('# SOURCE: https://ja4db.com/\n\n' + '\n'.join(db_kv))
