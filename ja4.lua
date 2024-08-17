@@ -13,22 +13,22 @@
 local sha = require('sha2')
 -- see: https://github.com/FoxIO-LLC/ja4/blob/main/python/common.py#L24
 local GREASE_TABLE = {}
-GREASE_TABLE['0x0a0a'] = true
-GREASE_TABLE['0x1a1a'] = true
-GREASE_TABLE['0x2a2a'] = true
-GREASE_TABLE['0x3a3a'] = true
-GREASE_TABLE['0x4a4a'] = true
-GREASE_TABLE['0x5a5a'] = true
-GREASE_TABLE['0x6a6a'] = true
-GREASE_TABLE['0x7a7a'] = true
-GREASE_TABLE['0x8a8a'] = true
-GREASE_TABLE['0x9a9a'] = true
-GREASE_TABLE['0xaaaa'] = true
-GREASE_TABLE['0xbaba'] = true
-GREASE_TABLE['0xcaca'] = true
-GREASE_TABLE['0xdada'] = true
-GREASE_TABLE['0xeaea'] = true
-GREASE_TABLE['0xfafa'] = true
+GREASE_TABLE['0a0a'] = true
+GREASE_TABLE['1a1a'] = true
+GREASE_TABLE['2a2a'] = true
+GREASE_TABLE['3a3a'] = true
+GREASE_TABLE['4a4a'] = true
+GREASE_TABLE['5a5a'] = true
+GREASE_TABLE['6a6a'] = true
+GREASE_TABLE['7a7a'] = true
+GREASE_TABLE['8a8a'] = true
+GREASE_TABLE['9a9a'] = true
+GREASE_TABLE['aaaa'] = true
+GREASE_TABLE['baba'] = true
+GREASE_TABLE['caca'] = true
+GREASE_TABLE['dada'] = true
+GREASE_TABLE['eaea'] = true
+GREASE_TABLE['fafa'] = true
 
 local TLS_VERSIONS = {}
 TLS_VERSIONS[65276] = 'd3'
@@ -41,7 +41,7 @@ TLS_VERSIONS[769] = '10'
 TLS_VERSIONS[768] = 's3'
 TLS_VERSIONS[2] = 's2'
 
-function split_string(str, delimiter)
+local function split_string(str, delimiter)
     local result = {}
     local from  = 1
     local delim_from, delim_to = string.find(str, delimiter, from)
@@ -54,7 +54,7 @@ function split_string(str, delimiter)
     return result
 end
 
-function remove_from_table(tbl, val)
+local function remove_from_table(tbl, val)
     for i,v in pairs(tbl) do
         if v == val then
             table.remove(tbl,i)
@@ -63,7 +63,7 @@ function remove_from_table(tbl, val)
     end
 end
 
-function table_length(tbl)
+local function table_length(tbl)
     local count = 0
     for _ in pairs(tbl) do count = count + 1 end
     return count
@@ -73,11 +73,19 @@ function starts_with(value, start)
     return string.sub(value, 1, 1) == start
 end
 
-function is_grease_value(value)
+local function is_grease_value(value)
     return GREASE_TABLE[value] ~= nil
 end
 
-function tls_protocol(txn)
+local function remove_grease(tbl)
+    for i,v in pairs(tbl) do
+        if is_grease_value(v) then
+            table.remove(tbl,i)
+        end
+    end
+end
+
+local function tls_protocol(txn)
     -- todo: lookup if quic/dtls
     if (starts_with(txn.f:req_ver(), '3'))
     then
@@ -87,9 +95,8 @@ function tls_protocol(txn)
     end
 end
 
-function tls_version(txn)
-    local v = txn.f:ssl_fc_protocol_hello_id()
-    local n = TLS_VERSIONS[v]
+local function tls_version(txn)
+    local n = TLS_VERSIONS[txn.f:ssl_fc_protocol_hello_id()]
     if (n==nil)
     then
         return ''
@@ -98,7 +105,7 @@ function tls_version(txn)
     end
 end
 
-function sni_is_set()
+local function sni_is_set()
     if (ssl_fc_sni=='')
     then
         return 'i'
@@ -107,15 +114,7 @@ function sni_is_set()
     end
 end
 
-function remove_grease(tbl)
-    for i,v in pairs(tbl) do
-        if is_grease_value(v) then
-            table.remove(tbl,i)
-        end
-    end
-end
-
-function cipher_count(txn)
+local function cipher_count(txn)
     local e = split_string(tostring(txn.c:be2dec(txn.f:ssl_fc_cipherlist_bin(1),"-",2)), "-")
     remove_grease(e)
     local c = table_length(e)
@@ -127,7 +126,7 @@ function cipher_count(txn)
     end
 end
 
-function extension_count(txn)
+local function extension_count(txn)
     local e = split_string(tostring(txn.c:be2dec(txn.f:ssl_fc_extlist_bin(1),"-",2)), "-")
     remove_grease(e)
     local c = table_length(e)
@@ -139,7 +138,7 @@ function extension_count(txn)
     end
 end
 
-function alpn(txn)
+local function alpn(txn)
     local a = txn.f:ssl_fc_alpn()
     if (a=='')
     then
@@ -149,7 +148,7 @@ function alpn(txn)
     end
 end
 
-function ciphers_sorted(txn)
+local function ciphers_sorted(txn)
     local c1 = string.lower(string.lower(tostring(txn.c:be2hex(txn.f:ssl_fc_cipherlist_bin(1),"-",2))))
     local c2 = split_string(c1, "-")
     remove_grease(c2)
@@ -157,7 +156,7 @@ function ciphers_sorted(txn)
     return c2
 end
 
-function extensions_sorted(txn)
+local function extensions_sorted(txn)
     local e1 = string.lower(tostring(txn.c:be2hex(txn.f:ssl_fc_extlist_bin(1),"-",2)))
     local e2 = split_string(e1, "-")
     remove_grease(e2)
@@ -168,27 +167,27 @@ function extensions_sorted(txn)
     return e2
 end
 
-function signature_algo_sorted(txn)
+local function signature_algorithms(txn)
     -- todo: https://github.com/FoxIO-LLC/ja4/blob/main/python/common.py#L147
     --       (https://github.com/FoxIO-LLC/ja4/blob/main/python/ja4.py#L215)
     local algos = {}
     return algos
 end
 
-function extensions_signature_merged(txn)
+local function extensions_signature_merged(txn)
     -- see: https://github.com/FoxIO-LLC/ja4/blob/main/python/ja4.py#L223
     local ext_sorted = extensions_sorted(txn)
     local ext_pretty = table.concat(ext_sorted, ",")
-    local sig_sorted = signature_algo_sorted(txn)
-    if (table_length(sig_sorted)==0)
+    local algos = signature_algorithms(txn)
+    if (table_length(algos)==0)
     then
         return ext_pretty
     else
-        return ext_pretty .. '_' .. table.concat(sig_sorted, ",")
+        return ext_pretty .. '_' .. table.concat(algos, ",")
     end
 end
 
-function truncated_sha256(value)
+local function truncated_sha256(value)
     return string.sub(sha.sha256(value), 1, 12)
 end
 
@@ -199,8 +198,6 @@ function fingerprint_ja4(txn)
     local p4 = cipher_count(txn)
     local p5 = extension_count(txn)
     local p6 = alpn(txn)
-
-    local test = tostring(txn.c:be2hex(txn.f:ssl_fc_cipherlist_bin(1),"-",2))
 
     local p7_sorted = ciphers_sorted(txn)
     local p7_pretty = table.concat(p7_sorted, ",")
