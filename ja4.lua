@@ -99,7 +99,7 @@ local function tls_version(txn)
     local n = TLS_VERSIONS[txn.f:ssl_fc_protocol_hello_id()]
     if (n==nil)
     then
-        return ''
+        return '00'
     else
         return n
     end
