@@ -19,6 +19,8 @@ def get_client(_entry: dict):
     return None
 
 
+processed = []
+
 with open('ja4+_db.json', 'r', encoding='utf-8') as db_file:
     db_full = json_loads(db_file.read())
     db_kv = []
@@ -28,7 +30,8 @@ with open('ja4+_db.json', 'r', encoding='utf-8') as db_file:
 
         if entry['ja4_fingerprint'] is not None:
             client = get_client(entry)
-            if client not in [None, '']:
+            if client not in [None, ''] and entry['ja4_fingerprint'] not in processed:
+                processed.append(entry['ja4_fingerprint'])
                 db_kv.append(f"{entry['ja4_fingerprint']} {client.replace(' ', WHITESPACE_REPLACE)}")
 
 with open('ja4.map', 'w', encoding='utf-8') as map_file:

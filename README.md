@@ -51,11 +51,11 @@ head ja4.map
 > t13d1517h2_8daaf6152771_b0da82dd1658 Mozilla/5.0_(Windows_NT_10.0;_Win64;_x64)_AppleWebKit/537.36_(KHTML,_like_Gecko)_Chrome/125.0.0.0_Safari/537.36
 > t13d1516h2_8daaf6152771_02713d6af862 Chromium_Browser
 > q13d0312h3_55b375c5d22e_06cda9e17597 Chromium_Browser
-> t13d1517h2_8daaf6152771_b0da82dd1658 Chromium_Browser
 > t13d1517h2_8daaf6152771_b1ff8ab2d16f Chromium_Browser
 > t13d190900_9dc949149365_97f8aa674fd9 Sliver_Agent
-> t13d190900_9dc949149365_97f8aa674fd9 Sliver_Agent
-> t13d1516h2_8daaf6152771_02713d6af862 Mozilla/5.0_(Windows_NT_10.0;_Win64;_x64)_AppleWebKit/537.36_(KHTML,_like_Gecko)_Chrome/125.0.0.0_Safari/537.36
+> t13d301200_1d37bd780c83_d339722ba4af http.rb/5.1.1_(Mastodon/4.2.9-stable+ff1;_+https://wien.rocks/)_Bot
+> t13d0912h2_f91f431d341e_dc02626b439c Fedineko_(crabo/0.3.1;_+https://fedineko.org/about)
+> t13d1714h2_5b57614c22b0_14788d8d241b Mozilla/5.0_(iPhone;_CPU_iPhone_OS_17_5_like_Mac_OS_X)_AppleWebKit/605.1.15_(KHTML,_like_Gecko)_CriOS/125.0.6422.80_Mobile/15E148_Safari/604.1
 ```
 
 You can enable lookups like this: `http-request set-var(txn.fingerprint_app) var(txn.fingerprint_ja4),map_beg(/tmp/haproxy_ja4.map)`
