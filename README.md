@@ -95,3 +95,14 @@ If you have:
 ```bash
 127.0.0.1:44480 [16/Aug/2024:16:46:56.981] test_ja4~ test_ja4/<NOSRV> 0/-1/-1/-1/0 200 49 - - PR-- 1/1/0/0/0 0/0 {t12d1715h2_002f,0035,009c,009d,1301,1302,1303,c009,c00a,c013,c014,c02b,c02c,c02f,c030,cca8,cca9_0005,000a,000b,000d,0017,001c,0022,0029,002b,002d,0033,fe0d,ff01|t12d1715h2_4a3d28116287_c114573b7948|} "GET https://localhost:6969/ HTTP/2.0"
 ```
+
+#### Docker
+
+If you prefer to use Docker, the manual steps can be skipped.
+Run the docker container from the project root and access https://localhost:6969
+
+```bash
+docker compose -f docker/docker-compose.yaml up --build --watch
+```
+
+`--watch` will automatically rebuild the container on changes
