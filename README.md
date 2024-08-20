@@ -58,7 +58,7 @@ head ja4.map
 > t13d1714h2_5b57614c22b0_14788d8d241b Mozilla/5.0_(iPhone;_CPU_iPhone_OS_17_5_like_Mac_OS_X)_AppleWebKit/605.1.15_(KHTML,_like_Gecko)_CriOS/125.0.6422.80_Mobile/15E148_Safari/604.1
 ```
 
-You can enable lookups like this: `http-request set-var(txn.fingerprint_app) var(txn.fingerprint_ja4),map_beg(/tmp/haproxy_ja4.map)`
+You can enable lookups like this: `http-request set-var(txn.fingerprint_app) var(txn.fingerprint_ja4),map(/tmp/haproxy_ja4.map)`
 
 And log the results like this: `http-request capture var(txn.fingerprint_app) len 200`
 
@@ -76,25 +76,15 @@ If you have:
 ### Issues
 
 * Have not yet been able to implement the signature algorithm fetching method ([src1](https://github.com/FoxIO-LLC/ja4/blob/main/python/common.py#L147), [src2](https://github.com/FoxIO-LLC/ja4/blob/main/python/ja4.py#L215))
+* Usage of [ssl_fc_protocol](https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/#7.3.4-ssl_fc_protocol) or 
+  [ssl_fc_protocol_hello_id](https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/#7.3.4-ssl_fc_protocol_hello_id) for part 2 of the fingerprint
 
 ### Testing
 
-* Create snakeoil certificate:
-
-  ```bash
-  openssl req -x509 -newkey rsa:4096 -sha256 -nodes -subj "/CN=HAProxy JA4 Test" -addext "subjectAltName = DNS:localhost,IP:127.0.0.1" -keyout /tmp/haproxy.key.pem -out /tmp/haproxy.crt.pem -days 30
-  cat /tmp/haproxy.crt.pem /tmp/haproxy.key.pem > /tmp/haproxy.pem
-  ```
-
-* Link the LUA script: `ln -s $(pwd)/ja4.lua /tmp/haproxy_ja4.lua`
-* Link the DB map: `ln -s $(pwd)/ja4.map /tmp/haproxy_ja4.map`
-* You can run the `haproxy_example.cfg` manually like this: `haproxy -W -f haproxy_example.cfg`
+* Run: `bash test/test.sh`
 * Access the test website: https://localhost:6969/
 
-
-```bash
-127.0.0.1:44480 [16/Aug/2024:16:46:56.981] test_ja4~ test_ja4/<NOSRV> 0/-1/-1/-1/0 200 49 - - PR-- 1/1/0/0/0 0/0 {t12d1715h2_002f,0035,009c,009d,1301,1302,1303,c009,c00a,c013,c014,c02b,c02c,c02f,c030,cca8,cca9_0005,000a,000b,000d,0017,001c,0022,0029,002b,002d,0033,fe0d,ff01|t12d1715h2_4a3d28116287_c114573b7948|} "GET https://localhost:6969/ HTTP/2.0"
-```
+Exit with `CTRL+C`
 
 #### Docker
 
@@ -102,7 +92,7 @@ If you prefer to use Docker, the manual steps can be skipped.
 Run the docker container from the project root and access https://localhost:6969
 
 ```bash
-docker compose -f docker/docker-compose.yaml up --build --watch
+docker compose -f test/docker-compose.yaml up --build --watch
 ```
 
 `--watch` will automatically rebuild the container on changes

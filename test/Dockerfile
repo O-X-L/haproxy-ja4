@@ -13,8 +13,8 @@ RUN openssl req -x509 -newkey rsa:4096 -sha256 -nodes -subj "/CN=HAProxy JA4 Tes
 
 FROM haproxy:${HAPROXY_VERSION}
 COPY --from=0 sha2.lua sha2.lua
-COPY --from=0  ja4.map /tmp/haproxy_ja4.map
-COPY --from=0  haproxy.pem /tmp/haproxy.pem
-ADD docker/index.html /tmp/index.html
+COPY --from=0 ja4.map /tmp/haproxy_ja4.map
+COPY --from=0 haproxy.pem /tmp/haproxy.pem
+ADD test/index.html /tmp/index.html
 
 EXPOSE 6969

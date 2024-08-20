@@ -2,7 +2,7 @@ services:
   haproxy:
     build:
       context: ../
-      dockerfile: docker/Dockerfile
+      dockerfile: test/Dockerfile
       args:
         HAPROXY_VERSION: "3.0-alpine"
     develop:
@@ -14,6 +14,6 @@ services:
         action: rebuild
     volumes:
       - $PWD/ja4.lua:/tmp/haproxy_ja4.lua
-      - $PWD/docker/haproxy_docker.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - $PWD/test/haproxy_example.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     ports:
       - 127.0.0.1:6969:6969

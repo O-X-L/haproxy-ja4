@@ -10,6 +10,7 @@
 --   log: http-request capture var(txn.fingerprint_ja4) len 36
 --   acl: var(txn.fingerprint_ja4) -m str t13d1517h2_8daaf6152771_b0da82dd1658
 
+local DEBUG = true
 local sha = require('sha2')
 -- see: https://github.com/FoxIO-LLC/ja4/blob/main/python/common.py#L24
 local GREASE_TABLE = {}
@@ -85,6 +86,20 @@ local function remove_grease(tbl)
     end
 end
 
+local function debug_var_str(txn, name, value)
+    if (DEBUG)
+    then
+        txn:set_var('txn.fingerprint_ja4_debug_' .. name, value)
+    end
+end
+
+local function debug_var(txn, name, value)
+    if (DEBUG)
+    then
+        debug_var_str(txn, name, table.concat(value, '-'))
+    end
+end
+
 local function tls_protocol(txn)
     -- todo: lookup if quic/dtls
     if (starts_with(txn.f:req_ver(), '3'))
@@ -97,7 +112,7 @@ end
 
 local function tls_version(txn)
     local n = TLS_VERSIONS[txn.f:ssl_fc_protocol_hello_id()]
-    if (n==nil)
+    if (n == nil)
     then
         return '00'
     else
@@ -105,8 +120,8 @@ local function tls_version(txn)
     end
 end
 
-local function sni_is_set()
-    if (ssl_fc_sni=='')
+local function sni_is_set(txn)
+    if (txn.f:ssl_fc_sni() == '')
     then
         return 'i'
     else
@@ -115,10 +130,10 @@ local function sni_is_set()
 end
 
 local function cipher_count(txn)
-    local e = split_string(tostring(txn.c:be2dec(txn.f:ssl_fc_cipherlist_bin(1),"-",2)), "-")
+    local e = split_string(tostring(txn.c:be2dec(txn.f:ssl_fc_cipherlist_bin(1), '-', 2)), '-')
     remove_grease(e)
     local c = table_length(e)
-    if (c>99)
+    if (c > 99)
     then
         return '99'
     else
@@ -127,10 +142,10 @@ local function cipher_count(txn)
 end
 
 local function extension_count(txn)
-    local e = split_string(tostring(txn.c:be2dec(txn.f:ssl_fc_extlist_bin(1),"-",2)), "-")
+    local e = split_string(tostring(txn.c:be2dec(txn.f:ssl_fc_extlist_bin(1), '-', 2)), '-')
     remove_grease(e)
     local c = table_length(e)
-    if (c>99)
+    if (c > 99)
     then
         return '99'
     else
@@ -140,7 +155,7 @@ end
 
 local function alpn(txn)
     local a = txn.f:ssl_fc_alpn()
-    if (a=='')
+    if (a == '')
     then
         return '00'
     else
@@ -149,20 +164,24 @@ local function alpn(txn)
 end
 
 local function ciphers_sorted(txn)
-    local c1 = string.lower(string.lower(tostring(txn.c:be2hex(txn.f:ssl_fc_cipherlist_bin(1),"-",2))))
-    local c2 = split_string(c1, "-")
+    local c1 = string.lower(string.lower(tostring(txn.c:be2hex(txn.f:ssl_fc_cipherlist_bin(1), '-', 2))))
+    local c2 = split_string(c1, '-')
     remove_grease(c2)
+    debug_var_str(txn, 'ciphers_1', c1)
+    debug_var(txn, 'ciphers_2', c2)
     table.sort(c2)
     return c2
 end
 
 local function extensions_sorted(txn)
-    local e1 = string.lower(tostring(txn.c:be2hex(txn.f:ssl_fc_extlist_bin(1),"-",2)))
-    local e2 = split_string(e1, "-")
+    local e1 = string.lower(tostring(txn.c:be2hex(txn.f:ssl_fc_extlist_bin(1), '-', 2)))
+    local e2 = split_string(e1, '-')
     remove_grease(e2)
+    debug_var_str(txn, 'extensions_1', e1)
     -- see: https://github.com/FoxIO-LLC/ja4/blob/main/python/common.py#L109
     remove_from_table(e2, '0000')
     remove_from_table(e2, '0010')
+    debug_var(txn, 'extensions_2', e2)
     table.sort(e2)
     return e2
 end
@@ -177,13 +196,14 @@ end
 local function extensions_signature_merged(txn)
     -- see: https://github.com/FoxIO-LLC/ja4/blob/main/python/ja4.py#L223
     local ext_sorted = extensions_sorted(txn)
-    local ext_pretty = table.concat(ext_sorted, ",")
+    local ext_pretty = table.concat(ext_sorted, ',')
     local algos = signature_algorithms(txn)
-    if (table_length(algos)==0)
+    debug_var(txn, 'algorithms', algos)
+    if (table_length(algos) == 0)
     then
         return ext_pretty
     else
-        return ext_pretty .. '_' .. table.concat(algos, ",")
+        return ext_pretty .. '_' .. table.concat(algos, ',')
     end
 end
 
@@ -194,19 +214,19 @@ end
 function fingerprint_ja4(txn)
     local p1 = tls_protocol(txn)
     local p2 = tls_version(txn)
-    local p3 = sni_is_set()
+    local p3 = sni_is_set(txn)
     local p4 = cipher_count(txn)
     local p5 = extension_count(txn)
     local p6 = alpn(txn)
 
     local p7_sorted = ciphers_sorted(txn)
-    local p7_pretty = table.concat(p7_sorted, ",")
-    local p7 = truncated_sha256(table.concat(p7_sorted, ""))
+    local p7_pretty = table.concat(p7_sorted, ',')
+    local p7 = truncated_sha256(table.concat(p7_sorted, ''))
 
     local p8_pretty = extensions_signature_merged(txn)
     local p8 = truncated_sha256(p8_pretty)
 
-    txn:set_var('txn.fingerprint_ja4_raw', p1 .. p2 .. p3 .. p4 .. p5 .. p6 .. '_' .. p7_pretty .. '_' .. p8_pretty)
+    txn:set_var('txn.fingerprint_ja4_raw', p1 .. '_' .. p2 .. '_' .. p3 .. '_' .. p4 .. '_' .. p5 .. '_' .. p6 .. '_' .. p7_pretty .. '_' .. p8_pretty)
     txn:set_var('txn.fingerprint_ja4', p1 .. p2 .. p3 .. p4 .. p5 .. p6 .. '_' .. p7 .. '_' .. p8)
 end
 
