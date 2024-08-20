@@ -73,6 +73,8 @@ If you have:
 * Have an idea on how to improve it - [feel free to start a discussion](https://github.com/O-X-L/haproxy-ja4/discussions/new/choose)
 * PRs are welcome
 
+Please [read the JA4 TLS details](https://github.com/FoxIO-LLC/ja4/blob/main/technical_details/JA4.md)!
+
 ### Issues
 
 * Have not yet been able to implement the signature algorithm fetching method ([src1](https://github.com/FoxIO-LLC/ja4/blob/main/python/common.py#L147), [src2](https://github.com/FoxIO-LLC/ja4/blob/main/python/ja4.py#L215))

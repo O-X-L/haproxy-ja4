@@ -31,10 +31,13 @@ GREASE_TABLE['dada'] = true
 GREASE_TABLE['eaea'] = true
 GREASE_TABLE['fafa'] = true
 
+local DTLS_1 = 65279
+local DTLS_2 = 65277
+local DTLS_3 = 65276
 local TLS_VERSIONS = {}
-TLS_VERSIONS[65276] = 'd3'
-TLS_VERSIONS[65277] = 'd2'
-TLS_VERSIONS[65279] = 'd1'
+TLS_VERSIONS[DTLS_3] = 'd3'
+TLS_VERSIONS[DTLS_2] = 'd2'
+TLS_VERSIONS[DTLS_1] = 'd1'
 TLS_VERSIONS[772] = '13'
 TLS_VERSIONS[771] = '12'
 TLS_VERSIONS[770] = '11'
@@ -101,8 +104,11 @@ local function debug_var(txn, name, value)
 end
 
 local function tls_protocol(txn)
-    -- todo: lookup if quic/dtls
-    if (starts_with(txn.f:req_ver(), '3'))
+    local v = txn.f:ssl_fc_protocol_hello_id()
+    if (v == DTLS1 or v == DTLS_2 or v == DTLS_3)
+    then
+        return 'd'
+    elseif (starts_with(txn.f:req_ver(), '3'))
     then
         return 'q'
     else
@@ -112,6 +118,7 @@ end
 
 local function tls_version(txn)
     local n = TLS_VERSIONS[txn.f:ssl_fc_protocol_hello_id()]
+    debug_var_str(txn, 'tls_version', n)
     if (n == nil)
     then
         return '00'
