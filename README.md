@@ -81,7 +81,7 @@ If you have:
 
 ### Testing
 
-* Run: `bash test/test.sh`
+* Run: `bash test/run.sh`
 * Access the test website: https://localhost:6969/
 
 Exit with `CTRL+C`
