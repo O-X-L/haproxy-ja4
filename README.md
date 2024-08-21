@@ -75,12 +75,6 @@ If you have:
 
 Please [read the JA4 TLS details](https://github.com/FoxIO-LLC/ja4/blob/main/technical_details/JA4.md)!
 
-### Issues
-
-* Have not yet been able to implement the signature algorithm fetching method ([src1](https://github.com/FoxIO-LLC/ja4/blob/main/python/common.py#L147), [src2](https://github.com/FoxIO-LLC/ja4/blob/main/python/ja4.py#L215))
-* Usage of [ssl_fc_protocol](https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/#7.3.4-ssl_fc_protocol) or 
-  [ssl_fc_protocol_hello_id](https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/#7.3.4-ssl_fc_protocol_hello_id) for part 2 of the fingerprint
-
 ### Testing
 
 * Run: `bash test/run.sh`
