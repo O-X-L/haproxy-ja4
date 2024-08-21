@@ -98,11 +98,11 @@ local function tls_version(txn)
 end
 
 local function sni_is_set(txn)
-    if (txn.f:ssl_fc_sni() == '')
+    if (txn.f:ssl_fc_has_sni())
     then
-        return 'i'
-    else
         return 'd'
+    else
+        return 'i'
     end
 end
 
