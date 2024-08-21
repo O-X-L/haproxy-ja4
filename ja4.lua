@@ -12,24 +12,6 @@
 
 local DEBUG = true
 local sha = require('sha2')
--- see: https://github.com/FoxIO-LLC/ja4/blob/main/python/common.py#L24
-local GREASE_TABLE = {}
-GREASE_TABLE['0a0a'] = true
-GREASE_TABLE['1a1a'] = true
-GREASE_TABLE['2a2a'] = true
-GREASE_TABLE['3a3a'] = true
-GREASE_TABLE['4a4a'] = true
-GREASE_TABLE['5a5a'] = true
-GREASE_TABLE['6a6a'] = true
-GREASE_TABLE['7a7a'] = true
-GREASE_TABLE['8a8a'] = true
-GREASE_TABLE['9a9a'] = true
-GREASE_TABLE['aaaa'] = true
-GREASE_TABLE['baba'] = true
-GREASE_TABLE['caca'] = true
-GREASE_TABLE['dada'] = true
-GREASE_TABLE['eaea'] = true
-GREASE_TABLE['fafa'] = true
 
 local DTLS_1 = 65279
 local DTLS_2 = 65277
@@ -75,18 +57,6 @@ end
 
 function starts_with(value, start)
     return string.sub(value, 1, 1) == start
-end
-
-local function is_grease_value(value)
-    return GREASE_TABLE[value] ~= nil
-end
-
-local function remove_grease(tbl)
-    for i,v in pairs(tbl) do
-        if is_grease_value(v) then
-            table.remove(tbl,i)
-        end
-    end
 end
 
 local function debug_var_str(txn, name, value)
@@ -138,7 +108,6 @@ end
 
 local function cipher_count(txn)
     local e = split_string(tostring(txn.c:be2dec(txn.f:ssl_fc_cipherlist_bin(1), '-', 2)), '-')
-    remove_grease(e)
     local c = table_length(e)
     if (c > 99)
     then
@@ -150,7 +119,6 @@ end
 
 local function extension_count(txn)
     local e = split_string(tostring(txn.c:be2dec(txn.f:ssl_fc_extlist_bin(1), '-', 2)), '-')
-    remove_grease(e)
     local c = table_length(e)
     if (c > 99)
     then
@@ -173,7 +141,6 @@ end
 local function ciphers_sorted(txn)
     local c1 = string.lower(string.lower(tostring(txn.c:be2hex(txn.f:ssl_fc_cipherlist_bin(1), '-', 2))))
     local c2 = split_string(c1, '-')
-    remove_grease(c2)
     debug_var_str(txn, 'ciphers_1', c1)
     debug_var(txn, 'ciphers_2', c2)
     table.sort(c2)
@@ -183,7 +150,7 @@ end
 local function extensions_sorted(txn)
     local e1 = string.lower(tostring(txn.c:be2hex(txn.f:ssl_fc_extlist_bin(1), '-', 2)))
     local e2 = split_string(e1, '-')
-    remove_grease(e2)
+
     debug_var_str(txn, 'extensions_1', e1)
     -- see: https://github.com/FoxIO-LLC/ja4/blob/main/python/common.py#L109
     remove_from_table(e2, '0000')
