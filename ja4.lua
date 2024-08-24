@@ -139,7 +139,7 @@ local function alpn(txn)
 end
 
 local function ciphers_sorted(txn)
-    local c1 = string.lower(string.lower(tostring(txn.c:be2hex(txn.f:ssl_fc_cipherlist_bin(1), '-', 2))))
+    local c1 = string.lower(txn.c:be2hex(txn.f:ssl_fc_cipherlist_bin(1), '-', 2))
     local c2 = split_string(c1, '-')
     debug_var_str(txn, 'ciphers_1', c1)
     debug_var(txn, 'ciphers_2', c2)
@@ -195,7 +195,7 @@ function fingerprint_ja4(txn)
 
     local p7_sorted = ciphers_sorted(txn)
     local p7_pretty = table.concat(p7_sorted, ',')
-    local p7 = truncated_sha256(table.concat(p7_sorted, ''))
+    local p7 = truncated_sha256(table.concat(p7_sorted, ','))
 
     local p8_pretty = extensions_signature_merged(txn)
     local p8 = truncated_sha256(p8_pretty)
