@@ -107,7 +107,7 @@ local function sni_is_set(txn)
 end
 
 local function cipher_count(txn)
-    local e = split_string(tostring(txn.c:be2dec(txn.f:ssl_fc_cipherlist_bin(1), '-', 2)), '-')
+    local e = split_string(txn.c:be2dec(txn.f:ssl_fc_cipherlist_bin(1), '-', 2), '-')
     local c = table_length(e)
     if (c > 99)
     then
@@ -118,7 +118,7 @@ local function cipher_count(txn)
 end
 
 local function extension_count(txn)
-    local e = split_string(tostring(txn.c:be2dec(txn.f:ssl_fc_extlist_bin(1), '-', 2)), '-')
+    local e = split_string(txn.c:be2dec(txn.f:ssl_fc_extlist_bin(1), '-', 2), '-')
     local c = table_length(e)
     if (c > 99)
     then
@@ -148,7 +148,7 @@ local function ciphers_sorted(txn)
 end
 
 local function extensions_sorted(txn)
-    local e1 = string.lower(tostring(txn.c:be2hex(txn.f:ssl_fc_extlist_bin(1), '-', 2)))
+    local e1 = string.lower(txn.c:be2hex(txn.f:ssl_fc_extlist_bin(1), '-', 2))
     local e2 = split_string(e1, '-')
 
     debug_var_str(txn, 'extensions_1', e1)
