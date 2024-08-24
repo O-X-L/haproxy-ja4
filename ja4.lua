@@ -87,14 +87,22 @@ local function tls_protocol(txn)
 end
 
 local function tls_version(txn)
-    local n = TLS_VERSIONS[txn.f:ssl_fc_protocol_hello_id()]
-    debug_var_str(txn, 'tls_version', n)
-    if (n == nil)
-    then
-        return '00'
-    else
-        return n
+    local n
+    local vers_bin = txn.f:ssl_fc_supported_versions_bin(1)
+
+    if #vers_bin >= 2 then
+        local first_vers_bin = string.sub(vers_bin, 1, 2)
+        local first_vers = string.unpack(">I2", first_vers_bin)
+        n = TLS_VERSIONS[first_vers]
     end
+
+    if not n then
+        n = TLS_VERSIONS[txn.f:ssl_fc_protocol_hello_id()]
+    end
+
+    debug_var_str(txn, 'tls_version', n)
+
+    return n or '00'
 end
 
 local function sni_is_set(txn)
