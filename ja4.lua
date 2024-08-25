@@ -161,10 +161,9 @@ local function extensions_sorted(txn)
 end
 
 local function signature_algorithms(txn)
-    -- todo: https://github.com/FoxIO-LLC/ja4/blob/main/python/common.py#L147
-    --       (https://github.com/FoxIO-LLC/ja4/blob/main/python/ja4.py#L215)
-    local algos = {}
-    return algos
+    -- https://github.com/FoxIO-LLC/ja4/blob/main/python/common.py#L147
+    local a1 = string.lower(tostring(txn.c:be2hex(txn.f:ssl_fc_sigalgs_bin(), '-', 2)))
+    return split_string(a1, '-')
 end
 
 local function extensions_signature_merged(txn)
