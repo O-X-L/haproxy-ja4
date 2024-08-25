@@ -195,7 +195,7 @@ function fingerprint_ja4(txn)
 
     local p7_sorted = ciphers_sorted(txn)
     local p7_pretty = table.concat(p7_sorted, ',')
-    local p7 = truncated_sha256(table.concat(p7_sorted, ','))
+    local p7 = truncated_sha256(p7_pretty)
 
     local p8_pretty = extensions_signature_merged(txn)
     local p8 = truncated_sha256(p8_pretty)
