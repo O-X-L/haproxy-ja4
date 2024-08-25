@@ -91,7 +91,7 @@ local function tls_version(txn)
         n = txn.f:ssl_fc_protocol_hello_id()
     end
 
-    return TLS_VERSIONS[h] or '00'
+    return TLS_VERSIONS[n] or '00'
 end
 
 local function sni_is_set(txn)
