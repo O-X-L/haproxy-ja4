@@ -82,6 +82,7 @@ local function tls_version(txn)
     -- get highest value from supported_versions extension
     local supported_versions = split_string(txn.c:be2dec(txn.f:ssl_fc_supported_versions_bin(), '-', 2), '-')
     for i,v in pairs(supported_versions) do
+        v = tonumber(v)
         if (not n or v > n) then
             n = v
         end
