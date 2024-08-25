@@ -170,8 +170,7 @@ end
 
 local function signature_algorithms(txn)
     -- https://github.com/FoxIO-LLC/ja4/blob/main/python/common.py#L147
-    local a1 = string.lower(tostring(txn.c:be2hex(txn.f:ssl_fc_sigalgs_bin(), '-', 2)))
-    return split_string(a1, '-')
+    return split_string(string.lower(txn.c:be2hex(txn.f:ssl_fc_sigalgs_bin(), '-', 2)), '-')
 end
 
 local function extensions_signature_merged(txn)

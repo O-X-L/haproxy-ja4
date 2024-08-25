@@ -6,6 +6,8 @@ This plugin is still in early development!
 
 It depends on [HAProxy Features that have yet to be released](https://github.com/haproxy/haproxy/issues/2495)!
 
+If these features are not yet available in your version - it will fail with the error `attempt to call a nil value (method 'ssl_fc_supported_versions_bin')`
+
 ----
 
 ## Intro
