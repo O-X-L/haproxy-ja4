@@ -1,6 +1,12 @@
 # HAProxy - JA4 TLS Client-Fingerprint - Lua Plugin
 
-**WARNING: This plugin is still in early development! DO NOT USE IN PRODUCTION!**
+## WARNING: Not production ready
+
+This plugin is still in early development!
+
+It depends on [HAProxy Features that have yet to be released](https://github.com/haproxy/haproxy/issues/2495)!
+
+----
 
 ## Intro
 
@@ -28,7 +34,7 @@ About JA3:
 
 ## Config
 
-* Enable SSL/TLS capture with the global setting [tune.ssl.capture-buffer-size 96](https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/#tune.ssl.capture-buffer-size)
+* Enable SSL/TLS capture with the global setting [tune.ssl.capture-buffer-size 128](https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/#tune.ssl.capture-buffer-size)
 * Load the LUA module with `lua-load /etc/haproxy/lua/ja4.lua`
 * Execute the LUA script on HTTP requests: `http-request lua.fingerprint_ja4`
 * Log the fingerprint: `http-request capture var(txn.fingerprint_ja4) len 36`
