@@ -3,7 +3,7 @@
 -- License: MIT
 
 -- JA4
--- see: https://github.com/FoxIO-LLC/ja4
+-- see: https://github.com/FoxIO-LLC/ja4 | https://github.com/FoxIO-LLC/ja4/blob/main/technical_details/JA4.md#tls-and-dtls-version
 -- config:
 --   register: lua-load /etc/haproxy/lua/ja4.lua (in global)
 --   run: http-request lua.fingerprint_ja4
@@ -49,37 +49,27 @@ local function remove_from_table(tbl, val)
     end
 end
 
-local function table_length(tbl)
-    local count = 0
-    for _ in pairs(tbl) do count = count + 1 end
-    return count
-end
-
 function starts_with(value, start)
     return string.sub(value, 1, 1) == start
 end
 
 local function debug_var_str(txn, name, value)
-    if (DEBUG)
-    then
+    if (DEBUG) then
         txn:set_var('txn.fingerprint_ja4_debug_' .. name, value)
     end
 end
 
 local function debug_var(txn, name, value)
-    if (DEBUG)
-    then
+    if (DEBUG) then
         debug_var_str(txn, name, table.concat(value, '-'))
     end
 end
 
 local function tls_protocol(txn)
     local v = txn.f:ssl_fc_protocol_hello_id()
-    if (v == DTLS1 or v == DTLS_2 or v == DTLS_3)
-    then
+    if (v == DTLS1 or v == DTLS_2 or v == DTLS_3) then
         return 'd'
-    elseif (starts_with(txn.f:req_ver(), '3'))
-    then
+    elseif (starts_with(txn.f:req_ver(), '3')) then
         return 'q'
     else
         return 't'
@@ -90,24 +80,20 @@ local function tls_version(txn)
     local n
     local vers_bin = txn.f:ssl_fc_supported_versions_bin(1)
 
-    if #vers_bin >= 2 then
-        local first_vers_bin = string.sub(vers_bin, 1, 2)
-        local first_vers = string.unpack(">I2", first_vers_bin)
-        n = TLS_VERSIONS[first_vers]
+    -- get highest value from supported_versions extension
+    if (#vers_bin >= 2) then
+        n = TLS_VERSIONS[string.unpack('>I2', string.sub(vers_bin, 1, 2))]
     end
 
-    if not n then
+    if (not n) then
         n = TLS_VERSIONS[txn.f:ssl_fc_protocol_hello_id()]
     end
-
-    debug_var_str(txn, 'tls_version', n)
 
     return n or '00'
 end
 
 local function sni_is_set(txn)
-    if (txn.f:ssl_fc_has_sni())
-    then
+    if (txn.f:ssl_fc_has_sni()) then
         return 'd'
     else
         return 'i'
@@ -116,9 +102,8 @@ end
 
 local function cipher_count(txn)
     local e = split_string(txn.c:be2dec(txn.f:ssl_fc_cipherlist_bin(1), '-', 2), '-')
-    local c = table_length(e)
-    if (c > 99)
-    then
+    local c = #e
+    if (c > 99) then
         return '99'
     else
         return tostring(c)
@@ -127,9 +112,8 @@ end
 
 local function extension_count(txn)
     local e = split_string(txn.c:be2dec(txn.f:ssl_fc_extlist_bin(1), '-', 2), '-')
-    local c = table_length(e)
-    if (c > 99)
-    then
+    local c = #e
+    if (c > 99) then
         return '99'
     else
         return tostring(c)
@@ -138,8 +122,7 @@ end
 
 local function alpn(txn)
     local a = txn.f:ssl_fc_alpn()
-    if (a == '')
-    then
+    if (not a or a == '') then
         return '00'
     else
         return a
@@ -149,9 +132,9 @@ end
 local function ciphers_sorted(txn)
     local c1 = string.lower(txn.c:be2hex(txn.f:ssl_fc_cipherlist_bin(1), '-', 2))
     local c2 = split_string(c1, '-')
-    debug_var_str(txn, 'ciphers_1', c1)
-    debug_var(txn, 'ciphers_2', c2)
+    debug_var(txn, 'ciphers_1', c2)
     table.sort(c2)
+    debug_var(txn, 'ciphers_2', c2)
     return c2
 end
 
@@ -165,6 +148,7 @@ local function extensions_sorted(txn)
     remove_from_table(e2, '0010')
     debug_var(txn, 'extensions_2', e2)
     table.sort(e2)
+    debug_var(txn, 'extensions_3', e2)
     return e2
 end
 
@@ -179,8 +163,7 @@ local function extensions_signature_merged(txn)
     local ext_pretty = table.concat(ext_sorted, ',')
     local algos = signature_algorithms(txn)
     debug_var(txn, 'algorithms', algos)
-    if (table_length(algos) == 0)
-    then
+    if (#algos == 0) then
         return ext_pretty
     else
         return ext_pretty .. '_' .. table.concat(algos, ',')

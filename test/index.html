@@ -6,17 +6,17 @@
     <body>
         <h2>FINGERPRINT</h2>
         <p>
-            fingerprint_ja: %[var(txn.fingerprint_ja4)]
+            %[var(txn.fingerprint_ja4)]
         </p>
         <hr>
         <h2>APP FROM DB</h2>
         <p>
-            fingerprint_app: %[var(txn.fingerprint_app)]
+            %[var(txn.fingerprint_app)]
         </p>
         <hr>
         <h2>DEBUG</h2>
         <p>
-            fingerprint_ja4_raw: %[var(txn.fingerprint_ja4_raw)]
+            raw fingerprint: %[var(txn.fingerprint_ja4_raw)]
         </p>
         <hr>
         <p>
@@ -24,7 +24,7 @@
         </p>
         <hr>
         <p>
-            ssl_hello_id: %[ssl_fc_protocol_hello_id] (V: %[var(txn.fingerprint_ja4_debug_tls_version)])
+            ssl_hello_id: %[ssl_fc_protocol_hello_id]
         </p>
         <hr>
         <p>
@@ -36,11 +36,11 @@
         </p>
         <hr>
         <p>
-            ciphers unfiltered: %[var(txn.fingerprint_ja4_debug_ciphers_1)]
+            ciphers unsorted: %[var(txn.fingerprint_ja4_debug_ciphers_1)]
         </p>
         <hr>
         <p>
-            .... ciphers filtered: %[var(txn.fingerprint_ja4_debug_ciphers_2)]
+            ... ciphers sorted: %[var(txn.fingerprint_ja4_debug_ciphers_2)]
         </p>
         <hr>
         <p>
@@ -48,7 +48,11 @@
         </p>
         <hr>
         <p>
-            .... extensions filtered:   %[var(txn.fingerprint_ja4_debug_extensions_2)]
+            ... extensions filtered:   %[var(txn.fingerprint_ja4_debug_extensions_2)]
+        </p>
+        <hr>
+        <p>
+            ..... extensions sorted:   %[var(txn.fingerprint_ja4_debug_extensions_3)]
         </p>
         <hr>
         <p>
