@@ -100,24 +100,13 @@ local function sni_is_set(txn)
     end
 end
 
-local function cipher_count(txn)
-    local e = split_string(txn.c:be2dec(txn.f:ssl_fc_cipherlist_bin(1), '-', 2), '-')
-    local c = #e
-    if (c > 99) then
-        return '99'
-    else
-        return tostring(c)
+local function bin_list_length(txn, func)
+    local bin_data = func(txn.f, 1)
+    if (not bin_data) then
+        return '00'
     end
-end
-
-local function extension_count(txn)
-    local e = split_string(txn.c:be2dec(txn.f:ssl_fc_extlist_bin(1), '-', 2), '-')
-    local c = #e
-    if (c > 99) then
-        return '99'
-    else
-        return tostring(c)
-    end
+    local items = split_string(txn.c:be2dec(bin_data, '-', 2), '-')
+    return string.format('%02d', math.min(#items, 99))
 end
 
 local function alpn(txn)
@@ -178,8 +167,8 @@ function fingerprint_ja4(txn)
     local p1 = tls_protocol(txn)
     local p2 = tls_version(txn)
     local p3 = sni_is_set(txn)
-    local p4 = cipher_count(txn)
-    local p5 = extension_count(txn)
+    local p4 = bin_list_length(txn, txn.f.ssl_fc_cipherlist_bin)
+    local p5 = bin_list_length(txn, txn.f.ssl_fc_extlist_bin)
     local p6 = alpn(txn)
 
     local p7_sorted = ciphers_sorted(txn)
