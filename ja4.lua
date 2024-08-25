@@ -78,18 +78,20 @@ end
 
 local function tls_version(txn)
     local n
-    local vers_bin = txn.f:ssl_fc_supported_versions_bin(1)
 
     -- get highest value from supported_versions extension
-    if (#vers_bin >= 2) then
-        n = TLS_VERSIONS[string.unpack('>I2', string.sub(vers_bin, 1, 2))]
+    local supported_versions = split_string(txn.c:be2dec(txn.f:ssl_fc_supported_versions_bin(), '-', 2), '-')
+    for i,v in pairs(supported_versions) do
+        if (not n or v > n) then
+            n = v
+        end
     end
 
     if (not n) then
-        n = TLS_VERSIONS[txn.f:ssl_fc_protocol_hello_id()]
+        n = txn.f:ssl_fc_protocol_hello_id()
     end
 
-    return n or '00'
+    return TLS_VERSIONS[h] or '00'
 end
 
 local function sni_is_set(txn)
