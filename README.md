@@ -2,9 +2,7 @@
 
 ## WARNING: Not production ready
 
-This plugin is still in early development!
-
-It depends on [HAProxy Features that have yet to be released](https://github.com/haproxy/haproxy/issues/2495)!
+This plugin depends on [HAProxy Features that will be release in version 3.1](https://github.com/haproxy/haproxy/issues/2495)!
 
 If these features are not yet available in your version - it will fail with the error `attempt to call a nil value (method 'ssl_fc_supported_versions_bin')`
 
@@ -85,11 +83,6 @@ Please [read the JA4 TLS details](https://github.com/FoxIO-LLC/ja4/blob/main/tec
 
 ### Testing
 
-* Run: `bash test/run.sh`
-* Access the test website: https://localhost:6969/
-
-Exit with `CTRL+C`
-
 #### Docker
 
 If you prefer to use Docker, the manual steps can be skipped.
@@ -100,3 +93,13 @@ docker compose -f test/docker-compose.yaml up --build --watch
 ```
 
 `--watch` will automatically rebuild the container on changes
+
+#### Local
+
+**WARNING**: You need to run a version of HAProxy >=3.1 or `master` 
+
+* Run: `bash test/run.sh`
+* Access the test website: https://localhost:6969/
+
+Exit with `CTRL+C`
+
