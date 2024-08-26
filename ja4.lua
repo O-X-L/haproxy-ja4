@@ -42,7 +42,7 @@ end
 
 local function remove_from_table(tbl, val)
     for i,v in pairs(tbl) do
-        if v == val then
+        if (v == val) then
             table.remove(tbl,i)
             break
         end
@@ -80,19 +80,25 @@ local function tls_version(txn)
     local n
 
     -- get highest value from supported_versions extension
-    local supported_versions = split_string(txn.c:be2dec(txn.f:ssl_fc_supported_versions_bin(), '-', 2), '-')
-    for i,v in pairs(supported_versions) do
-        v = tonumber(v)
-        if (not n or v > n) then
-            n = v
+    local vers_bin = txn.f:ssl_fc_supported_versions_bin(1)
+    if (#vers_bin >= 2) then
+        local max_vers_bin = 0
+
+        for i = 1, #vers_bin, 2 do
+            local current_vers_bin = string.unpack('>I2', vers_bin, i)
+            if (current_vers_bin > max_vers_bin) then
+                max_vers_bin = current_vers_bin
+            end
         end
+
+        n = TLS_VERSIONS[max_vers_bin]
     end
 
     if (not n) then
-        n = txn.f:ssl_fc_protocol_hello_id()
+        n = TLS_VERSIONS[txn.f:ssl_fc_protocol_hello_id()]
     end
 
-    return TLS_VERSIONS[n] or '00'
+    return n or '00'
 end
 
 local function sni_is_set(txn)
