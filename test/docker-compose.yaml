@@ -4,7 +4,7 @@ services:
       context: ../
       dockerfile: test/Dockerfile
       args:
-        HAPROXY_VERSION: "3.0-alpine"
+        HAPROXY_BRANCH: "master"
     develop:
       watch:
       - path: ../
