@@ -42,7 +42,7 @@ end
 
 local function remove_from_table(tbl, val)
     for i,v in pairs(tbl) do
-        if v == val then
+        if (v == val) then
             table.remove(tbl,i)
             break
         end
@@ -78,11 +78,20 @@ end
 
 local function tls_version(txn)
     local n
-    local vers_bin = txn.f:ssl_fc_supported_versions_bin(1)
 
     -- get highest value from supported_versions extension
+    local vers_bin = txn.f:ssl_fc_supported_versions_bin(1)
     if (#vers_bin >= 2) then
-        n = TLS_VERSIONS[string.unpack('>I2', string.sub(vers_bin, 1, 2))]
+        local max_vers_bin = 0
+
+        for i = 1, #vers_bin, 2 do
+            local current_vers_bin = string.unpack('>I2', vers_bin, i)
+            if (current_vers_bin > max_vers_bin) then
+                max_vers_bin = current_vers_bin
+            end
+        end
+
+        n = TLS_VERSIONS[max_vers_bin]
     end
 
     if (not n) then
