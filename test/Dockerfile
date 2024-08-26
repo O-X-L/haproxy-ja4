@@ -62,7 +62,6 @@ RUN apk add --no-cache openssl zlib lua5.4-libs pcre2 jemalloc
 ADD --chmod=755 "${HAPROXY_DOCKER_SRC_URL}/docker-entrypoint.sh" '/docker-entrypoint.sh'
 ADD --chmod=644 "${HAPROXY_DOCKER_SRC_URL}/haproxy.cfg" '/usr/local/etc/haproxy/haproxy.cfg'
 COPY --from=0 /usr/local/sbin/haproxy /usr/local/sbin/haproxy
-COPY --from=0 sha2.lua sha2.lua
 COPY --from=0 ja4.map /tmp/haproxy_ja4.map
 COPY --from=0 haproxy.pem /tmp/haproxy.pem
 ADD test/index.html /tmp/index.html
