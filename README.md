@@ -12,19 +12,17 @@ If these features are not yet available in your version - it will fail with the 
 
 About JA4:
 
-* [JA4 Suite](https://github.com/FoxIO-LLC/ja4/blob/main/technical_details/README.md)
 * [JA4 TLS details](https://github.com/FoxIO-LLC/ja4/blob/main/technical_details/JA4.md)
-* [FoxIO Repository](https://github.com/FoxIO-LLC/ja4)
 * [Cloudflare Blog](https://blog.cloudflare.com/ja4-signals)
 * [FoxIO Blog](https://blog.foxio.io/ja4%2B-network-fingerprinting)
 * [FoxIO JA4 Database](https://ja4db.com/)
-* [HAProxy Lua Plugin Draft (JA4H)](https://github.com/O-X-L/haproxy-ja4h)
+* [JA4 Suite](https://github.com/FoxIO-LLC/ja4/blob/main/technical_details/README.md)
 
 About JA3:
 * [HAProxy Lua Plugin (JA3N)](https://github.com/O-X-L/haproxy-ja3n)
 * [Salesforce Repository](https://github.com/salesforce/ja3)
 * [HAProxy Enterprise JA3 Fingerprint](https://customer-docs.haproxy.com/bot-management/client-fingerprinting/tls-fingerprint/)
-* [JA3N](https://tlsfingerprint.io/norm_fp)
+* [Why JA3 broke => JA3N](https://github.com/salesforce/ja3/issues/88)
 
 ----
 
@@ -50,24 +48,14 @@ You can use [the DB to MAP script](https://github.com/O-X-L/haproxy-ja4/blob/lat
 # build the map-file
 python3 ja4db-to-map.py
 
-# check the output file
-head ja4.map
-> # SOURCE: https://ja4db.com/
-> 
+# examples:
 > t13d1517h2_8daaf6152771_b0da82dd1658 Mozilla/5.0_(Windows_NT_10.0;_Win64;_x64)_AppleWebKit/537.36_(KHTML,_like_Gecko)_Chrome/125.0.0.0_Safari/537.36
 > t13d1516h2_8daaf6152771_02713d6af862 Chromium_Browser
-> q13d0312h3_55b375c5d22e_06cda9e17597 Chromium_Browser
-> t13d1517h2_8daaf6152771_b1ff8ab2d16f Chromium_Browser
-> t13d190900_9dc949149365_97f8aa674fd9 Sliver_Agent
-> t13d301200_1d37bd780c83_d339722ba4af http.rb/5.1.1_(Mastodon/4.2.9-stable+ff1;_+https://wien.rocks/)_Bot
-> t13d0912h2_f91f431d341e_dc02626b439c Fedineko_(crabo/0.3.1;_+https://fedineko.org/about)
-> t13d1714h2_5b57614c22b0_14788d8d241b Mozilla/5.0_(iPhone;_CPU_iPhone_OS_17_5_like_Mac_OS_X)_AppleWebKit/605.1.15_(KHTML,_like_Gecko)_CriOS/125.0.6422.80_Mobile/15E148_Safari/604.1
 ```
 
 You can enable lookups like this: `http-request set-var(txn.fingerprint_app) var(txn.fingerprint_ja4),map(/tmp/haproxy_ja4.map)`
 
 And log the results like this: `http-request capture var(txn.fingerprint_app) len 200`
-
 
 ----
 
@@ -82,6 +70,18 @@ If you have:
 Please [read the JA4 TLS details](https://github.com/FoxIO-LLC/ja4/blob/main/technical_details/JA4.md)!
 
 ### Testing
+
+Example:
+```
+FINGERPRINT
+t13d1713h2_5b57614c22b0_748f4c70de1c
+
+APP FROM DB
+Mozilla/5.0_(Android_14;_Mobile;_rv:126.0)_Gecko/126.0_Firefox/126.0
+
+DEBUG
+raw fingerprint: t_13_d_17_13_h2_002f,0035,009c,009d,1301,1302,1303,c009,c00a,c013,c014,c02b,c02c,c02f,c030,cca8,cca9_0005,000a,000b,000d,0017,001c,0022,002b,0033,fe0d,ff01_0403,0503,0603,0804,0805,0806,0401,0501,0601,0203,0201 
+```
 
 #### Docker
 
