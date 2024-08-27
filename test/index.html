@@ -34,29 +34,5 @@
         <p>
             ssl_alpn: %[ssl_fc_alpn]
         </p>
-        <hr>
-        <p>
-            ciphers unsorted: %[var(txn.fingerprint_ja4_debug_ciphers_1)]
-        </p>
-        <hr>
-        <p>
-            ... ciphers sorted: %[var(txn.fingerprint_ja4_debug_ciphers_2)]
-        </p>
-        <hr>
-        <p>
-            extensions unfiltered: %[var(txn.fingerprint_ja4_debug_extensions_1)]
-        </p>
-        <hr>
-        <p>
-            ... extensions filtered:   %[var(txn.fingerprint_ja4_debug_extensions_2)]
-        </p>
-        <hr>
-        <p>
-            ..... extensions sorted:   %[var(txn.fingerprint_ja4_debug_extensions_3)]
-        </p>
-        <hr>
-        <p>
-            signature algorithms: %[var(txn.fingerprint_ja4_debug_algorithms)]
-        </p>
     </body>
 </html>

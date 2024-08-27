@@ -10,8 +10,6 @@
 --   log: http-request capture var(txn.fingerprint_ja4) len 36
 --   acl: var(txn.fingerprint_ja4) -m str t13d1517h2_8daaf6152771_b0da82dd1658
 
-local DEBUG = true
-
 local DTLS_1 = 65279
 local DTLS_2 = 65277
 local DTLS_3 = 65276
@@ -50,18 +48,6 @@ end
 
 function starts_with(value, start)
     return string.sub(value, 1, 1) == start
-end
-
-local function debug_var_str(txn, name, value)
-    if (DEBUG) then
-        txn:set_var('txn.fingerprint_ja4_debug_' .. name, value)
-    end
-end
-
-local function debug_var(txn, name, value)
-    if (DEBUG) then
-        debug_var_str(txn, name, table.concat(value, '-'))
-    end
 end
 
 local function tls_protocol(txn)
@@ -127,26 +113,19 @@ local function alpn(txn)
 end
 
 local function ciphers_sorted(txn)
-    local c1 = string.lower(txn.c:be2hex(txn.f:ssl_fc_cipherlist_bin(1), '-', 2))
-    local c2 = split_string(c1, '-')
-    debug_var(txn, 'ciphers_1', c2)
-    table.sort(c2)
-    debug_var(txn, 'ciphers_2', c2)
-    return c2
+    local c = split_string(string.lower(txn.c:be2hex(txn.f:ssl_fc_cipherlist_bin(1), '-', 2)), '-')
+    table.sort(c)
+    return c
 end
 
 local function extensions_sorted(txn)
-    local e1 = string.lower(txn.c:be2hex(txn.f:ssl_fc_extlist_bin(1), '-', 2))
-    local e2 = split_string(e1, '-')
+    local e = split_string(string.lower(txn.c:be2hex(txn.f:ssl_fc_extlist_bin(1), '-', 2)), '-')
 
-    debug_var_str(txn, 'extensions_1', e1)
     -- see: https://github.com/FoxIO-LLC/ja4/blob/main/python/common.py#L109
-    remove_from_table(e2, '0000')
-    remove_from_table(e2, '0010')
-    debug_var(txn, 'extensions_2', e2)
-    table.sort(e2)
-    debug_var(txn, 'extensions_3', e2)
-    return e2
+    remove_from_table(e, '0000')
+    remove_from_table(e, '0010')
+    table.sort(e)
+    return e
 end
 
 local function signature_algorithms(txn)
@@ -159,7 +138,6 @@ local function extensions_signature_merged(txn)
     local ext_sorted = extensions_sorted(txn)
     local ext_pretty = table.concat(ext_sorted, ',')
     local algos = signature_algorithms(txn)
-    debug_var(txn, 'algorithms', algos)
     if (#algos == 0) then
         return ext_pretty
     else
