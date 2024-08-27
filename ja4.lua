@@ -10,8 +10,6 @@
 --   log: http-request capture var(txn.fingerprint_ja4) len 36
 --   acl: var(txn.fingerprint_ja4) -m str t13d1517h2_8daaf6152771_b0da82dd1658
 
-local sha = require('sha2')
-
 local DTLS_1 = 65279
 local DTLS_2 = 65277
 local DTLS_3 = 65276
@@ -147,8 +145,8 @@ local function extensions_signature_merged(txn)
     end
 end
 
-local function truncated_sha256(value)
-    return string.sub(sha.sha256(value), 1, 12)
+local function truncated_sha256(txn, value)
+    return string.sub(string.lower(txn.c:hex(txn.c:digest(value, 'sha256'))), 1, 12)
 end
 
 function fingerprint_ja4(txn)
@@ -161,10 +159,10 @@ function fingerprint_ja4(txn)
 
     local p7_sorted = ciphers_sorted(txn)
     local p7_pretty = table.concat(p7_sorted, ',')
-    local p7 = truncated_sha256(p7_pretty)
+    local p7 = truncated_sha256(txn, p7_pretty)
 
     local p8_pretty = extensions_signature_merged(txn)
-    local p8 = truncated_sha256(p8_pretty)
+    local p8 = truncated_sha256(txn, p8_pretty)
 
     txn:set_var('txn.fingerprint_ja4_raw', p1 .. '_' .. p2 .. '_' .. p3 .. '_' .. p4 .. '_' .. p5 .. '_' .. p6 .. '_' .. p7_pretty .. '_' .. p8_pretty)
     txn:set_var('txn.fingerprint_ja4', p1 .. p2 .. p3 .. p4 .. p5 .. p6 .. '_' .. p7 .. '_' .. p8)
