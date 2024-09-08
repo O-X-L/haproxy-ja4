@@ -33,7 +33,7 @@ About JA3:
 ## Config
 
 * Enable SSL/TLS capture with the global setting [tune.ssl.capture-buffer-size 128](https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/#tune.ssl.capture-buffer-size)
-* Load the LUA module with `lua-load /etc/haproxy/lua/ja4.lua`
+* Load the LUA module by adding `lua-load /etc/haproxy/lua/ja4.lua` in the `global` section
 * Execute the LUA script on HTTP requests: `http-request lua.fingerprint_ja4`
 * Log the fingerprint: `http-request capture var(txn.fingerprint_ja4) len 36`
 
