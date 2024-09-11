@@ -29,9 +29,9 @@ with open('ja4+_db.json', 'r', encoding='utf-8') as db_file:
             print(entry)
 
         fp = entry['ja4_fingerprint']
-        if fp is not None:
+        if fp is not None and fp not in processed:
             client = get_client(entry)
-            if client not in [None, ''] and fp not in processed:
+            if client not in [None, '']:
                 processed.append(fp)
                 db_kv.append(f"{fp} {client.replace(' ', WHITESPACE_REPLACE)}")
 
