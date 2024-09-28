@@ -146,7 +146,11 @@ local function extensions_signature_merged(txn)
 end
 
 local function truncated_sha256(txn, value)
-    return string.sub(string.lower(txn.c:hex(txn.c:digest(value, 'sha256'))), 1, 12)
+    if (#value == 0) then
+        return '000000000000'
+    else
+        return string.sub(string.lower(txn.c:hex(txn.c:digest(value, 'sha256'))), 1, 12)
+    end
 end
 
 function fingerprint_ja4(txn)
