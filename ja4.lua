@@ -103,13 +103,26 @@ local function bin_list_length(txn, func)
     return string.format('%02d', math.min(#items, 99))
 end
 
+local function is_alphanumeric(char)
+    return string.match(char, '%a') or string.match(char, '%d')
+end
+
 local function alpn(txn)
     local a = txn.f:ssl_fc_alpn()
+
     if (not a or a == '') then
         return '00'
-    else
-        return a
     end
+
+    local fc = string.sub(a, 1, 1)
+    local lc = string.sub(a, -1)
+
+    if (not is_alphanumeric(fc) or not is_alphanumeric(lc)) then
+        fc = string.format('%x', string.byte(fc)):sub(1, 1)
+        lc = string.format('%x', string.byte(lc, #lc)):sub(-1)
+    end
+
+    return fc .. lc
 end
 
 local function ciphers_sorted(txn)
