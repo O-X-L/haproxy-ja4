@@ -1,10 +1,8 @@
 # HAProxy - JA4 TLS Client-Fingerprint - Lua Plugin
 
-## WARNING: Not production ready
+You need to run [HAProxy 3.1 or higher](https://github.com/haproxy/haproxy/issues/2495) to use this plugin!
 
-This plugin depends on [HAProxy Features that will be release in version 3.1](https://github.com/haproxy/haproxy/issues/2495)!
-
-If these features are not yet available in your version - it will fail with the error `attempt to call a nil value (method 'ssl_fc_supported_versions_bin')`
+If the needed features are not yet available in your version - it will fail with the error `attempt to call a nil value (method 'ssl_fc_supported_versions_bin')`
 
 ----
 
@@ -102,4 +100,3 @@ docker compose -f test/docker-compose.yaml up --build --watch
 * Access the test website: https://localhost:6969/
 
 Exit with `CTRL+C`
-
