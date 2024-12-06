@@ -66,7 +66,7 @@ local function tls_version(txn)
 
     -- get highest value from supported_versions extension
     local vers_bin = txn.f:ssl_fc_supported_versions_bin(1)
-    if (#vers_bin >= 2) then
+    if (vers_bin and #vers_bin >= 2) then
         local max_vers_bin = 0
 
         for i = 1, #vers_bin, 2 do
