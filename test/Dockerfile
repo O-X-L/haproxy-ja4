@@ -47,9 +47,11 @@ RUN apk add --no-cache ca-certificates jemalloc && \
     apk add --no-cache openssl zlib lua5.4-libs pcre2 curl python3 && \
     rm -f /var/cache/apk/*
 
+ADD ../ja4db-dedupe.py .
 ADD ../ja4db-to-map.py .
 RUN curl -s https://raw.githubusercontent.com/Egor-Skriptunoff/pure_lua_SHA/master/sha2.lua -o sha2.lua && \
-    curl -s https://ja4db.com/api/read/ -o ja4+_db.json && \
+    curl -s https://ja4db.com/api/read/ -o ja4db.json && \
+    python3 ja4db-dedupe.py && \
     python3 ja4db-to-map.py
 RUN openssl req -x509 -newkey rsa:4096 -sha256 -nodes -subj "/CN=HAProxy JA4 Test" \
     -addext "subjectAltName = DNS:localhost,IP:127.0.0.1" -keyout haproxy.key.pem \

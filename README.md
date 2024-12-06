@@ -39,11 +39,14 @@ About JA3:
 
 You can use [the DB to MAP script](https://github.com/O-X-L/haproxy-ja4/blob/latest/ja4db-to-map.py) to create a HAProxy Mapfile from the [FoxIO JA4-Database](https://ja4db.com/):
 
+WARNING: The exact versions of client-applications may vary.
+
 ```bash
-# download the DB in JSON format: https://ja4db.com/api/download/
-# place it in the same directory as the script
+# download the database
+curl -s https://ja4db.com/api/read/ -o ja4db.json
 
 # build the map-file
+python3 ja4db-dedupe.py
 python3 ja4db-to-map.py
 
 # examples:
