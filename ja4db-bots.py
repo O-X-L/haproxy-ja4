@@ -5,6 +5,7 @@
 # License: MIT
 
 # script used to create a list of only bot-related fingerprints
+# WARNING: the
 
 # download raw db:
 #   curl -s https://ja4db.com/api/read/ -o ja4db.json
@@ -16,6 +17,10 @@ from json import loads as json_loads
 from json import dumps as json_dumps
 
 DEBUG = False
+# making sure most of the recorded clients are bots - else we might have too many false-positives
+#   increase the limit for less false-positives; lower into negative to get more entries in the output-db
+BOT_SCORE_LIMIT = 0
+
 BOT_SCRIPT = [
     'golang', 'wget', 'curl', 'go-http-client', 'apache-httpclient', 'java', 'perl',
     'python', 'openssl', 'headless', 'cypress', 'mechanicalsoup', 'grpc-go', 'okhttp',
@@ -24,16 +29,18 @@ BOT_SCRIPT = [
     'malware', 'httprequest',
 ]
 BOT_SCAN = [
-    'scan', 'scanner', 'nessus', 'metasploit', 'zgrab', 'zmap', 'nmap', 'research',
+    'scan', 'scanner', 'nessus', 'metasploit', 'zgrab', 'zmap', 'nmap', 'research', 'inspect',
 ]
 BOT_CRAWL = [
     'bot', 'mastodon', 'https://', 'http://', 'whatsapp', 'twitter', 'facebook', 'chatgpt',
     'telegram', 'crawler', 'colly', 'phpcrawl', 'nutch', 'spider', 'scrapy', 'elinks',
-    'imageVacuum', 'apify',
+    'imageVacuum', 'apify', 'chrome-lighthouse', 'adsdefender', 'baidu', 'yandex', 'duckduckgo',
+    'google', 'yahoo', 'bing', 'microsoftpreview',
 ]
 BOT_RANDOM = [
     'mozilla/4.', 'mozilla/3.', 'mozilla/2.', 'fidget-spinner-bot', 'test-bot', 'tiny-bot',
-    'download', 'printer', 'router', 'camera', 'phillips hue', 'vpn', 'cisco',
+    'download', 'printer', 'router', 'camera', 'phillips hue', 'vpn', 'cisco', 'proxy', 'image',
+    'office', 'fetcher', 'feed', 'photon', 'alittle client'
 ]
 BOT_SEARCH = BOT_SCRIPT
 BOT_SEARCH.extend(BOT_SCAN)
@@ -67,11 +74,9 @@ for entry in db:
     if client in [None, ''] or len(fp) != 36:
         continue
 
-    clow = client.lower()
-
     bot = False
     for s in BOT_SEARCH:
-        if clow.find(s) != -1:
+        if client.lower().find(s) != -1:
             bot = True
             bot_fp[fp] = client
             break
@@ -86,7 +91,7 @@ if DEBUG:
         f.write(json_dumps(bot_fp_score, indent=4))
 
 for fp, score in bot_fp_score.items():
-    if score < 1:
+    if score < BOT_SCORE_LIMIT:
         try:
             bot_fp.pop(fp)
 
