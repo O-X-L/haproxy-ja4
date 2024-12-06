@@ -5,7 +5,7 @@
 # License: MIT
 
 # script used to create a list of only bot-related fingerprints
-# WARNING: the
+# WARNING: there can be false-positives - use the BOT_SCORE_LIMIT to modify the output-db
 
 # download raw db:
 #   curl -s https://ja4db.com/api/read/ -o ja4db.json
