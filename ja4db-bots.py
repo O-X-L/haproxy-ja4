@@ -17,23 +17,28 @@ from json import dumps as json_dumps
 
 DEBUG = False
 BOT_SCRIPT = [
-    'nmap', 'golang', 'wget', 'curl', 'vpn', 'go-http-client', 'ngrok', 'zmap',
-    'printer', 'router', 'camera', 'phillips hue', 'apache-httpclient', 'apify',
-    'python', 'openssl', 'headless', 'cypress', 'mechanicalsoup', 'zgrab', 'grpc-go',
+    'golang', 'wget', 'curl', 'go-http-client', 'apache-httpclient', 'java', 'perl',
+    'python', 'openssl', 'headless', 'cypress', 'mechanicalsoup', 'grpc-go', 'okhttp',
     'httpx', 'httpcore', 'aiohttp', 'httputil', 'urllib', 'guzzle', 'axios', 'ruby',
-    'zend_http_client', 'wordpress', 'symfony', 'httpclient', 'cpp-httplib', 'java', 'perl',
-    'okhttp', 'malware',
+    'zend_http_client', 'wordpress', 'symfony', 'httpclient', 'cpp-httplib', 'ngrok',
+    'malware', 'httprequest',
 ]
 BOT_SCAN = [
-    'scan', 'scanner', 'nessus', 'metasploit',
+    'scan', 'scanner', 'nessus', 'metasploit', 'zgrab', 'zmap', 'nmap', 'research',
 ]
 BOT_CRAWL = [
     'bot', 'mastodon', 'https://', 'http://', 'whatsapp', 'twitter', 'facebook', 'chatgpt',
-    'telegram', 'crawler', 'colly', 'phpcrawl', 'nutch', 'spider',
+    'telegram', 'crawler', 'colly', 'phpcrawl', 'nutch', 'spider', 'scrapy', 'elinks',
+    'imageVacuum', 'apify',
+]
+BOT_RANDOM = [
+    'mozilla/4.', 'mozilla/3.', 'mozilla/2.', 'fidget-spinner-bot', 'test-bot', 'tiny-bot',
+    'download', 'printer', 'router', 'camera', 'phillips hue', 'vpn', 'cisco',
 ]
 BOT_SEARCH = BOT_SCRIPT
 BOT_SEARCH.extend(BOT_SCAN)
 BOT_SEARCH.extend(BOT_CRAWL)
+BOT_SEARCH.extend(BOT_RANDOM)
 
 CLIENT_KEYS = ['user_agent_string', 'application', 'notes', 'os']
 
