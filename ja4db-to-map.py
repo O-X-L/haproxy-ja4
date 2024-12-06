@@ -12,7 +12,8 @@ from os import system as shell
 from json import loads as json_loads
 
 DEBUG = False
-# see: https://www.haproxy.com/blog/introduction-to-haproxy-maps 'Empty lines and extra whitespace between words are ignored'
+# see: https://www.haproxy.com/blog/introduction-to-haproxy-maps
+#   'Empty lines and extra whitespace between words are ignored'
 WHITESPACE_REPLACE = '_'
 
 if not Path('ja4_dedupe.json').is_file():

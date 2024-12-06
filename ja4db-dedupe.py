@@ -10,6 +10,8 @@
 # download raw db:
 #   curl -s https://ja4db.com/api/read/ -o ja4db.json
 
+# pylint: disable=R0801
+
 from collections import Counter
 from re import sub as regex_replace
 from json import loads as json_loads
