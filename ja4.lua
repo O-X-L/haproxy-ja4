@@ -70,8 +70,8 @@ local function tls_version(txn)
         local max_vers_bin = 0
 
         for i = 1, #vers_bin, 2 do
-            local current_vers_bin = string.unpack('>I2', vers_bin, i)
-            if (current_vers_bin > max_vers_bin) then
+            local valid, current_vers_bin = pcall(string.unpack, '>I2', vers_bin, i)
+            if (valid and current_vers_bin > max_vers_bin) then
                 max_vers_bin = current_vers_bin
             end
         end
