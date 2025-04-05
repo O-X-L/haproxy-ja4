@@ -47,7 +47,7 @@ local function remove_from_table(tbl, val)
 end
 
 function starts_with(value, start)
-    return string.sub(value, 1, 1) == start
+    return type(value) == "string" and type(start) == "string" and string.sub(value, 1, 1) == start
 end
 
 local function tls_protocol(txn)
