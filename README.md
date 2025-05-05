@@ -15,9 +15,10 @@ About JA4:
 * [FoxIO Blog](https://blog.foxio.io/ja4%2B-network-fingerprinting)
 * [FoxIO JA4 Database](https://ja4db.com/)
 * [JA4 Suite](https://github.com/FoxIO-LLC/ja4/blob/main/technical_details/README.md)
+* [JA4H HAProxy Lua Plugin](https://github.com/O-X-L/haproxy-ja4h)
 
 About JA3:
-* [HAProxy Lua Plugin (JA3N)](https://github.com/O-X-L/haproxy-ja3n)
+* [JA3N HAProxy Lua Plugin](https://github.com/O-X-L/haproxy-ja3n)
 * [Salesforce Repository](https://github.com/salesforce/ja3)
 * [HAProxy Enterprise JA3 Fingerprint](https://customer-docs.haproxy.com/bot-management/client-fingerprinting/tls-fingerprint/)
 * [Why JA3 broke => JA3N](https://github.com/salesforce/ja3/issues/88)
