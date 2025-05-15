@@ -1,6 +1,7 @@
 -- Source: https://github.com/O-X-L/haproxy-ja4
 -- Copyright (C) 2024 Rath Pascal
 -- License: MIT
+-- Algorithm License: BSD 3-Clause
 
 -- JA4
 -- see: https://github.com/FoxIO-LLC/ja4 | https://github.com/FoxIO-LLC/ja4/blob/main/technical_details/JA4.md#tls-and-dtls-version

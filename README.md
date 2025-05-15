@@ -61,6 +61,14 @@ And log the results like this: `http-request capture var(txn.fingerprint_app) le
 
 ----
 
+## License
+
+This script is licensed under the MIT-license and thus if free to use.
+
+The JA4 algorithm is licensed under the `BSD 3-Clause` license and also free to use - see: [FoxIO-LLC/ja4](https://github.com/FoxIO-LLC/ja4?tab=readme-ov-file#licensing)
+
+----
+
 ## Contribute
 
 If you have:
