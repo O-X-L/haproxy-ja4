@@ -23,6 +23,9 @@ About JA3:
 * [HAProxy Enterprise JA3 Fingerprint](https://customer-docs.haproxy.com/bot-management/client-fingerprinting/tls-fingerprint/)
 * [Why JA3 broke => JA3N](https://github.com/salesforce/ja3/issues/88)
 
+Browser Fingerprinting:
+* [Browser Fingerprinting](https://github.com/O-X-L/browser-fingerprint)
+
 ----
 
 ## Usage
