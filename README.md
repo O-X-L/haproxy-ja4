@@ -4,6 +4,8 @@ You need to run [HAProxy 3.1 or higher](https://github.com/haproxy/haproxy/issue
 
 If the needed features are not yet available in your version - it will fail with the error `attempt to call a nil value (method 'ssl_fc_supported_versions_bin')`
 
+Test it: [fingerprint.oxl.app](https://fingerprint.oxl.app)
+
 ----
 
 ## Intro
