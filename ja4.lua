@@ -53,7 +53,7 @@ end
 
 local function tls_protocol(txn)
     local v = txn.f:ssl_fc_protocol_hello_id()
-    if (v == DTLS1 or v == DTLS_2 or v == DTLS_3) then
+    if (v == DTLS_1 or v == DTLS_2 or v == DTLS_3) then
         return 'd'
     elseif (starts_with(txn.f:req_ver(), '3')) then
         return 'q'
