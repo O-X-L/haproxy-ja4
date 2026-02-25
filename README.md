@@ -30,7 +30,6 @@ About JA4:
 About JA3:
 * [JA3N HAProxy Lua Plugin](https://github.com/O-X-L/haproxy-ja3n)
 * [Salesforce Repository](https://github.com/salesforce/ja3)
-* [HAProxy Enterprise JA3 Fingerprint](https://customer-docs.haproxy.com/bot-management/client-fingerprinting/tls-fingerprint/)
 * [Why JA3 broke => JA3N](https://github.com/salesforce/ja3/issues/88)
 
 Browser Fingerprinting:
