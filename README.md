@@ -1,11 +1,5 @@
 # HAProxy - JA4 TLS Client-Fingerprint - Lua Plugin
 
-<p align="center">
-    <a title="Support this Project (Donate, Support-Licenses)" href="https://shop.oxl.app/collections/open-source">
-        <img src="https://files.oxl.at/img/badge-oss-support.svg" alt="Support Badge (Donate, Support-Licenses)"/>
-    </a>
-</p>
-
 ----
 
 You need to run [HAProxy 3.1 or higher](https://github.com/haproxy/haproxy/issues/2495) to use this plugin!
